@@ -1,0 +1,117 @@
+# Author: Roden Derveni
+
+########## Short version: ##########
+- Run `DataViewer.py`
+- Go to web browser
+- Go to the webpage `http://127.0.0.1:8000/` 
+- Upload a .csv file (in the CSVs folder)
+- (If successful) Click `Apply function` / `Save data`
+
+########## Long version : ########## 
+
+########## Overview ##########
+
+# Files:
+    DataViewer.py:
+        All-encompassing Python script.
+        Runs the server, GUI and contains necessary functions
+        When run, must load in a file to get working
+
+    DefaultData_Gaussian.csv:
+        Default development dataset, 100 rows, 10 columns
+    Test_50000r10c.csv:
+        Max stress dataset, 50000 rows, 10 columns (Success)
+    Test_r1c1.csv:
+        Minimum stress test, 1 data point (Success)
+    Test_MissingValues.csv:
+        Test what happens if datashape has missing data (Success - Does not complain about missing data)
+    Test_Headers.csv:
+        Test with non-numeric headers (Success)
+    Test_AllStrings.csv:
+        Test where all data is non-numeric (Fails - message)
+    Test_OneString.csv:
+        Test where at least 1 datapoint is non-numeric (Fails - message)
+    Test_r0c0.csv:
+        Test where no data exists in file (Fails - message)
+    Test_r0c1.csv:
+        Test where wrong data shape is present (Fails - message)
+    Test_NonCSV.txt:
+        Testing something that isn't a csv file (Fails - message)
+    Test_NotACSV.csv:
+        Testing a file that is incorrectly labled as a CSV (it's a csv, compressed to a zip, then relabelled to .csv)
+
+
+# Required Packages and Development Environment:
+    Python 3.12.6
+    # Internal Libraries:
+        io, base64, datetime
+    # External Libraries:
+        flask  3.0.3
+        dash   3.0.1
+        pandas 2.2.3
+        numpy  2.1.2
+
+    # Other:
+        - Requires a typical consumer-end browser. 
+        - This was tested on Ubuntu 24.04.2 LTS with 
+            Mozilla Firefox 136.0.3 (64bit)
+            and Google Chrome Version 134.0.6998.165 (Official Build) (64-bit)
+
+            although it should work on Windows10/11 and OSX as well
+
+## How to run ##
+    Run `DataViewer.py` with your favourite compiler/IDE/runtime.
+    In a direct Unix terminal, `python3 DataViewer.py` or `python DataViewer.py` would suffice,
+    But this can be opened and run on any IDE (in theory... I tested in IDLE and VSCode)
+
+    This will generate a DASH-based GUI, viewable on the localhost through the browser, which
+    is accessed with FLASK.
+
+    The terminal will give out a message along the lines of:
+        "Dash is running on http://127.0.0.1:8000/"
+    The terminal should keep running if this successfully opened.
+
+    Go to your favourite browser window and go to `http://127.0.0.1:8000/`
+
+    (N.b. In case you get a message that the port is in use and it cannot be closed, 
+    specify the port directly at the bottom of `DataViewer.py`,and go to 
+    `http://127.0.0.1:ABCD/` instead, where `ABCD` is the port number.
+
+    There were ways to automate this but it may have been overkill for a 3 hour test.)
+
+## What to do from here? ##
+    The page should show with only 1 actionable button, 'Upload Data File'.
+    And some inactive buttons. 
+
+    Click this, select a file from the "CSVs" folder.
+    The list of files and their descriptions are given above.
+    You may start with loading `DefaultData_Gaussian.csv`
+
+    The page will update to show the dataset in a scrollable table.
+
+    Nothing will happen to the data until `Apply Function` is clicked.
+
+    When this is clicked, the data will immediately apply some 'non-deterministic function'
+    (it will multiply the data by some random value between 0 and 1).
+
+    Clicking `Apply Function` will force the function to be applied *and* for the table to update.
+
+    The browser tab will state 'updating' when an update is being checked.
+    The table will flash when it updates and the tab will return to its default name.
+    For the maximum-sized dataset, this takes a few seconds - machine dependent.
+
+    At any point, `Save Data` may be applies to save the current table to a CSV.
+    The original CSV remains unaffected.
+
+# Test cases
+    Each other CSV corresponds to some behaviour test. The list above shows if they are successful (i.e. the program continues to function with no user errors) or 'Failed' (i.e. a warning message is produced on the GUI - this is intended behaviour)
+
+    The 'debug' mode has been left on for the application, so any unexpected errors and tracebacks will appear on the GUI window in the bottom right corner. This is just for the sake of the test. 
+
+# Known caveats:
+    While there are some inefficiencies or non-ideal behaviours that I comment on, as far as I am aware the program should work as expected. A minor caveat is that with the 50k dataset, the program works but is slightly slowed.
+
+    However, I am aware that in some perfectly-timed instances, if an update is being pushed while a user tries to save the data or upload data, an error message appears in the terminal - depending on what stage it was caught at.
+    This does not break the code, it continues to run as expected for the new/next data, but an error message appears in the terminal. This can be observed with the 50k dataset.
+
+    TODO: This could be fixed by ensuring that the buttons are disabled during update actions. Find an approrpaite way to ensure code is truly paused.
